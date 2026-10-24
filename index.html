@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le stockage des produits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap">
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Fiche d'exercices en thème clair : blocs = séances, cartes dépliables, corrections masquables */
+:root {
+  --bg:        #f4f6f9;
+  --surface:   #ffffff;
+  --card:      #ffffff;
+  --border:    #dfe3ea;
+  --border-hi: #b9c0ce;
+  --text:      #1d2230;
+  --text-dim:  #5c6476;
+  --accent:    #b97d00;
+  --accent-bg: #fff6df;
+  --green:     #1b8047;
+  --green-bg:  #ecf7f0;
+  --green-bd:  #c9e6d4;
+  --green-dk:  #12552f;
+  --red:       #c23b3b;
+  --blue:      #2d69ad;
+  --blue-bg:   #edf3fb;
+  --purple:    #6f45ad;
+  --font-head: 'Syne', 'Trebuchet MS', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --radius:    10px;
+  color-scheme: light;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── HEADER ──────────────────────────────────────────────── */
+.site-header {
+  background: linear-gradient(135deg, #ffffff 0%, #eef2f8 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 44px 20px 32px;
+  text-align: center;
+}
+.site-header .kicker {
+  display: inline-block;
+  background: var(--accent);
+  color: #ffffff;
+  font-family: var(--font-head);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 3px;
+  margin-bottom: 18px;
+}
+.site-header h1 {
+  font-family: var(--font-head);
+  font-size: clamp(24px, 6vw, 38px);
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.site-header .sub {
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 400;
+  max-width: 540px;
+  margin: 0 auto 20px;
+}
+.legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 0 auto 22px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+/* ── NAV ANCRES ──────────────────────────────────────────── */
+.nav-anchors {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.nav-anchors a {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  text-decoration: none;
+  transition: border-color .15s, color .15s;
+}
+.nav-anchors a:hover, .nav-anchors a:focus-visible { border-color: var(--accent); color: var(--accent); }
+
+/* ── CONTENEUR PRINCIPAL ─────────────────────────────────── */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 36px 18px 80px;
+}
+
+/* ── TITRE DE BLOC ───────────────────────────────────────── */
+.bloc-titre {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 52px 0 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.bloc-titre:first-child { margin-top: 0; }
+.bloc-titre .icone { font-size: 26px; flex-shrink: 0; }
+.bloc-titre h2 {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.bloc-titre h2 small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+/* ── MÉMO ────────────────────────────────────────────────── */
+.memo {
+  background: var(--green-bg);
+  border: 1px solid var(--green-bd);
+  border-left: 4px solid var(--green);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 16px 0 24px;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.memo .memo-titre {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.memo code {
+  display: block;
+  background: #ffffff;
+  border: 1px solid var(--green-bd);
+  border-radius: 5px;
+  padding: 8px 12px;
+  color: var(--green-dk);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13.5px;
+  margin: 5px 0;
+}
+.memo .note { color: var(--text-dim); font-size: 13px; margin-top: 8px; }
+
+/* ── CARTE EXERCICE ──────────────────────────────────────── */
+.exo-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.exo-card:hover { border-color: var(--border-hi); }
+
+.exo-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.exo-header::-webkit-details-marker { display: none; }
+.exo-header:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.exo-num {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  min-width: 40px;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.badge-1 { background: #e9f6ee; color: var(--green); border: 1px solid #bfe2cc; }
+.badge-2 { background: var(--accent-bg); color: #8a5d00; border: 1px solid #efd798; }
+.badge-3 { background: #fbeaea; color: var(--red); border: 1px solid #efc4c4; }
+.badge-exam { background: #f2ecfa; color: var(--purple); border: 1px solid #d9c9ef; }
+
+.exo-titre-txt {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1 1 200px;
+  min-width: 0;
+}
+.chevron { color: var(--text-dim); font-size: 13px; flex-shrink: 0; transition: transform .2s; }
+details[open] .chevron { transform: rotate(180deg); }
+
+/* ── CORPS DE L'EXERCICE ─────────────────────────────────── */
+.exo-body { padding: 0 16px 20px; border-top: 1px solid var(--border); }
+
+.contexte {
+  background: var(--blue-bg);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 6px 6px 0;
+  padding: 14px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.contexte strong { color: var(--text); }
+
+.table-wrap { overflow-x: auto; margin: 12px 0; }
+.tableau-donnees {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--surface);
+}
+.tableau-donnees th {
+  background: #eef1f6;
+  color: var(--text-dim);
+  font-family: var(--font-head);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.tableau-donnees td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+.tableau-donnees tr:last-child td { border-bottom: none; }
+.tableau-donnees td.num { font-weight: 700; color: var(--text); white-space: nowrap; }
+
+.questions { margin: 18px 0 0; }
+.question { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+.question .q-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  color: #ffffff;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 11px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.question p { font-size: 14px; margin: 0; min-width: 0; }
+
+/* ── COUP DE POUCE ───────────────────────────────────────── */
+.ordre-grandeur {
+  background: var(--accent-bg);
+  border: 1px solid #efd798;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6e4b00;
+  margin: 12px 0 0;
+}
+.ordre-grandeur::before { content: "💡 "; }
+
+/* ── BOUTON CORRECTION ───────────────────────────────────── */
+.btn-corrige {
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 16px;
+  margin-top: 18px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-corrige:hover, .btn-corrige:focus-visible { border-color: var(--green); color: var(--green); }
+
+/* ── CORRECTION ──────────────────────────────────────────── */
+.correction {
+  display: none;
+  background: var(--green-bg);
+  border: 1px solid var(--green-bd);
+  border-radius: 6px;
+  padding: 16px;
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.correction.visible { display: block; }
+.correction .corr-etape {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--green-bd);
+}
+.correction .corr-etape:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.correction .c-num {
+  display: inline-block;
+  background: var(--green);
+  color: #ffffff;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 18px;
+  margin-right: 6px;
+}
+.correction code {
+  display: block;
+  background: #ffffff;
+  border: 1px solid var(--green-bd);
+  border-radius: 4px;
+  padding: 6px 12px;
+  color: var(--green-dk);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  margin: 5px 0;
+}
+.correction .res { font-family: var(--font-head); font-weight: 700; color: var(--text); }
+.correction .conclu { margin-top: 8px; font-size: 13.5px; color: #2c6244; font-style: italic; }
+.correction .tableau-corr { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; background: #ffffff; }
+.correction .tableau-corr th {
+  background: #dff0e6;
+  color: var(--green-dk);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  text-align: left;
+}
+.correction .tableau-corr td { padding: 6px 10px; border-bottom: 1px solid var(--green-bd); color: #24402f; vertical-align: top; }
+.correction .tableau-corr td.val { font-weight: 700; color: var(--green); }
+
+/* ── SÉPARATEUR ──────────────────────────────────────────── */
+hr.section-sep { border: none; border-top: 1px solid var(--border); margin: 54px 0 0; }
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 12px;
+  background: var(--surface);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .exo-titre-txt { font-size: 13.5px; }
+  .contexte { font-size: 13.5px; }
+  .tableau-donnees { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="kicker">🥖 Gestion appliquée – CAP boulanger</div>
+  <h1>Le stockage<br>des produits</h1>
+  <p class="sub">Chapitre 11. 18 exercices en 5 séances, avec la boulangerie Au Pain Doré. Ouvre un exercice, réponds sur ton cahier, puis vérifie avec la correction.</p>
+  <div class="legende">
+    <span class="badge badge-1">⬆ décollage</span> je découvre
+    <span class="badge badge-2">◆ intermédiaire</span> j'applique
+    <span class="badge badge-exam">★ examen</span> je m'entraîne
+  </div>
+  <nav class="nav-anchors">
+    <a href="#enjeux">1 · Les enjeux des stocks</a>
+    <a href="#niveaux">2 · Les niveaux de stock</a>
+    <a href="#peps">3 · La méthode PEPS</a>
+    <a href="#fiche">4 · La fiche de stock</a>
+    <a href="#examen">5 · Sujets type examen</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 1 – LES ENJEUX DE LA GESTION DES STOCKS (séance 1)
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="enjeux">
+  <span class="icone">📦</span>
+  <h2><small>Séance 1 · 1 h</small>Bloc 1 – Pourquoi gérer les stocks ?</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo</div>
+  <code>Denrée périssable = se conserve peu de temps (date limite de consommation, DLC). Ex. : beurre, crème, levure fraîche.</code>
+  <code>Denrée non périssable = se conserve longtemps (date de durabilité minimale, DDM). Ex. : farine, sucre, sel.</code>
+  <code>Bon d'entrée = document qui accompagne chaque entrée dans le stock. Bon de sortie = document qui accompagne chaque sortie du stock.</code>
+  <code>Rupture de stock = le stock d'un produit est épuisé alors que l'on en a encore besoin.</code>
+  <p class="note">Sources : encadré « bon à savoir », document 1 (le processus d'approvisionnement) et document 2 (qu'est-ce qu'une rupture de stock ?) du manuel.</p>
+</div>
+
+<!-- EX 1 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 1</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Périssable ou non périssable ?</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Léa commence son apprentissage à la boulangerie <strong>Au Pain Doré</strong>. M. Bertin, le patron, lui fait visiter la réserve et la chambre froide. Il lui montre : <strong>farine T45, sel, sucre, beurre, crème fraîche, levure fraîche, œufs</strong>.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Classe ces produits en deux colonnes : denrées périssables et denrées non périssables.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Explique pourquoi M. Bertin doit avoir un stock de ces produits.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Quel type de date trouve-t-on sur un sac de farine : une DLC ou une DDM ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> demande-toi si le produit doit aller au froid et s'il peut attendre plusieurs mois dans la réserve.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <div class="table-wrap">
+        <table class="tableau-corr">
+          <tr><th>Denrées périssables</th><th>Denrées non périssables</th></tr>
+          <tr><td class="val">Beurre · crème fraîche · levure fraîche · œufs</td><td class="val">Farine T45 · sel · sucre</td></tr>
+        </table>
+        </div>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Le boulanger doit pouvoir disposer des produits chaque fois qu'il en a besoin, pour ne jamais manquer d'un ingrédient pendant la production (encadré « bon à savoir »).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">Une DDM (date de durabilité minimale, « à consommer de préférence avant… »).</p>
+        <p class="conclu">Remarque : le manuel parle de « DLC longue » pour les denrées non périssables. C'est inexact : la DLC concerne les produits périssables. Les produits qui se conservent longtemps portent une DDM (appelée DLUO dans le référentiel de 2014).</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 2 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 2</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Le circuit du beurre dans la boulangerie</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Le livreur dépose des cartons de beurre chez <strong>Au Pain Doré</strong>. M. Bertin explique à Léa le chemin du beurre, de la commande jusqu'aux croissants. Il s'appuie sur le <strong>document 1</strong> du manuel (le processus d'approvisionnement).
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Remets dans l'ordre : production · commande · stockage · livraison · entrée en stock · sortie de stock.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Nomme le document qui accompagne une entrée dans le stock.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Nomme le document qui accompagne une sortie du stock.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> questions 2 et 3 = exercice 1 du manuel. Regarde les bulles du document 1.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Commande → livraison → entrée en stock → stockage → sortie de stock → production</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span> <span class="res">Le bon d'entrée.</span>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span> <span class="res">Le bon de sortie.</span>
+        <p class="conclu">Si la commande n'est pas passée à temps, le circuit s'arrête : c'est la rupture de stock (document 1).</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 3 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 3</span>
+    <span class="badge badge-2">◆ intermédiaire</span>
+    <span class="exo-titre-txt">Plus de beurre pour les croissants</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Samedi, 5 h du matin. Yanis, l'apprenti de 2e année, ouvre la chambre froide : il ne reste <strong>plus de beurre</strong>. Impossible de tourer la pâte à croissants. Les croissants et les pains au chocolat ne seront pas en vitrine ce matin.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Comment s'appelle cette situation ? Donne sa définition.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Explique pourquoi cette situation représente « un manque à gagner » pour Au Pain Doré.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> exercices 2 et 3 du manuel, document 2. Pas de produit = pas de vente.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p class="res">Une rupture de stock : le stock d'un produit est épuisé alors que l'on en a encore besoin.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Sans beurre, Yanis ne peut pas produire les viennoiseries, donc la boulangerie ne peut pas les vendre. Elle perd de l'argent.</p>
+        <p class="conclu">Corrigé du manuel, exercice 3 : « le boulanger-pâtissier ne peut plus produire et par conséquent vendre ».</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 4 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 4</span>
+    <span class="badge badge-exam">★ examen</span>
+    <span class="exo-titre-txt">La cliente qui repart sans croissant</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Le même samedi, Mme Morel, la vendeuse, annonce à une cliente fidèle qu'il n'y a pas de croissants. La cliente répond : « tant pis, j'irai à la boulangerie d'en face ». M. Bertin découvre que personne n'a signalé que le stock de beurre baissait.<br><br>
+      <strong>Document 2</strong> (extrait) : une rupture peut venir d'une forte demande inattendue, d'un manque d'anticipation ou d'une erreur de gestion. Elle peut altérer l'image de l'entreprise et la confiance du consommateur.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Cite les trois causes possibles d'une rupture de stock.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Quelle est la cause de la rupture de beurre chez Au Pain Doré ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Explique la phrase : « celle-ci peut altérer l'image de l'entreprise et la confiance du consommateur ».</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> question 3 = exercice 4 du manuel. Pense à ce que la cliente va dire de la boulangerie.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Une forte demande inattendue (succès) · un manque d'anticipation · une erreur de gestion</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Un manque d'anticipation (erreur de gestion) : la baisse du stock n'a pas été signalée et la commande n'a pas été passée à temps.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">La cliente est déçue et va chez le concurrent. Elle pense que la boulangerie n'est pas sérieuse, car elle n'anticipe pas ses besoins pour satisfaire ses clients.</p>
+        <p class="conclu">Corrigé du manuel, exercice 4. Une rupture fait perdre la vente du jour, mais aussi parfois le client.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 2 – LES NIVEAUX DE STOCK (séance 2)
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="niveaux" style="margin-top:40px">
+  <span class="icone">📊</span>
+  <h2><small>Séance 2 · 1 h</small>Bloc 2 – Les niveaux de stock</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo</div>
+  <code>Stock réel = quantité observée en stock.</code>
+  <code>Stock minimum = consommation prévue pendant le délai de livraison.</code>
+  <code>Stock maximum = quantité à ne pas dépasser (place, coût).</code>
+  <code>Stock de sécurité = quantité prévue pour faire face à un retard de livraison ou à une consommation plus forte.</code>
+  <code>Stock d'alerte = stock minimum + stock de sécurité. Quand il est atteint, on passe la commande.</code>
+  <p class="note">Source : document 3 du manuel (les niveaux de stocks).</p>
+</div>
+
+<!-- EX 5 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 5</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Le bon mot pour chaque niveau</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      M. Bertin affiche dans la réserve d'Au Pain Doré les cinq niveaux de stock du <strong>document 3</strong>. Léa doit les retrouver à partir de ce qu'il dit.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>« Je compte les sacs dans la réserve ce matin. » De quel stock parle-t-il ?</p></div>
+      <div class="question"><span class="q-num">2</span><p>« Je n'ai pas la place de stocker plus. » De quel stock parle-t-il ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>« Je garde de quoi produire en attendant le livreur. » De quel stock parle-t-il ?</p></div>
+      <div class="question"><span class="q-num">4</span><p>« Je garde un peu plus, au cas où le meunier serait en retard. » De quel stock parle-t-il ?</p></div>
+      <div class="question"><span class="q-num">5</span><p>« À ce niveau, je téléphone au meunier. » De quel stock parle-t-il ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> relis le mémo, une phrase correspond à une seule définition.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span> <span class="res">Le stock réel.</span>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span> <span class="res">Le stock maximum.</span>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span> <span class="res">Le stock minimum.</span>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span> <span class="res">Le stock de sécurité.</span>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">5</span> <span class="res">Le stock d'alerte.</span>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 6 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 6</span>
+    <span class="badge badge-2">◆ intermédiaire</span>
+    <span class="exo-titre-txt">Les sacs de farine d'Au Pain Doré</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      <strong>Au Pain Doré</strong> n'a pas une grande capacité de stockage pour la farine. Elle commande des <strong>sacs de 25 kg</strong> chez son meunier et ne peut pas stocker plus de <strong>20 sacs</strong>. Aujourd'hui, le stock compte <strong>6 sacs</strong>.<br><br>
+      Le meunier livre en <strong>48 h</strong>. Pour produire pendant ce délai, la boulangerie garde <strong>3 sacs</strong>. Le meunier a parfois du retard : <strong>2 sacs supplémentaires</strong> sont gardés pour faire face à un retard ou à un imprévu.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>À l'aide du document 3, complète le tableau : stock réel, stock maximum, stock minimum, stock de sécurité (en sacs de 25 kg).</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> exercice 5 du manuel. Chaque nombre de la situation correspond à un niveau.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <div class="table-wrap">
+        <table class="tableau-corr">
+          <tr><th>Niveau de stock</th><th>Quantité (sacs de 25 kg)</th></tr>
+          <tr><td>Stock réel</td><td class="val">6</td></tr>
+          <tr><td>Stock maximum</td><td class="val">20</td></tr>
+          <tr><td>Stock minimum</td><td class="val">3</td></tr>
+          <tr><td>Stock de sécurité</td><td class="val">2</td></tr>
+        </table>
+        </div>
+        <p class="conclu">Corrigé du manuel, exercice 5. Le délai de 48 h sert à trouver le stock minimum, ce n'est pas un niveau de stock.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 7 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 7</span>
+    <span class="badge badge-2">◆ intermédiaire</span>
+    <span class="exo-titre-txt">Quand appeler le meunier ?</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      On reprend les sacs de farine de l'exercice 6 : stock minimum <strong>3 sacs</strong>, stock de sécurité <strong>2 sacs</strong>, stock réel <strong>6 sacs</strong>.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calcule le stock d'alerte et justifie le calcul.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Quand faut-il passer la commande chez le meunier ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Combien de kilos de farine représente le stock d'alerte ?</p></div>
+      <div class="question"><span class="q-num">4</span><p>Aujourd'hui, faut-il commander ? Justifie.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> exercices 6 et 7 du manuel. Stock d'alerte = stock minimum + stock de sécurité.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Stock d'alerte = stock minimum + stock de sécurité = 3 + 2 = 5 sacs</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Quand le stock d'alerte est atteint, soit 5 sacs.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>5 × 25 kg = 125 kg</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">Non, pas encore : le stock réel (6 sacs) est au-dessus du stock d'alerte (5 sacs). Il faudra commander bientôt.</p>
+        <p class="conclu">Corrigé du manuel, exercices 6 et 7.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 8 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 8</span>
+    <span class="badge badge-exam">★ examen</span>
+    <span class="exo-titre-txt">Une semaine dans la réserve</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Les niveaux de l'exercice 6 ne changent pas (maximum 20, minimum 3, sécurité 2, alerte 5 sacs). Chaque matin, Léa compte les sacs de farine :
+      <div class="table-wrap">
+      <table class="tableau-donnees">
+        <tr><th>Jour</th><th>Stock réel compté</th></tr>
+        <tr><td>Lundi</td><td class="num">6 sacs</td></tr>
+        <tr><td>Mercredi</td><td class="num">5 sacs</td></tr>
+        <tr><td>Vendredi</td><td class="num">2 sacs</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Quel jour la commande devait-elle être passée ? Justifie.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Vendredi, la commande n'est toujours pas passée. Quel stock la boulangerie est-elle en train d'utiliser ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Quel risque court Au Pain Doré ? Explique en une phrase.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> compare chaque nombre au stock d'alerte (5) et au stock de sécurité (2).</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p class="res">Mercredi : le stock réel (5 sacs) atteint le stock d'alerte (5 sacs).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Le stock de sécurité (2 sacs) : le stock minimum est déjà consommé.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">Avec 48 h de délai de livraison, la farine risque de manquer avant l'arrivée du meunier : c'est le risque de rupture de stock.</p>
+        <p class="conclu">Les niveaux de stock ne servent à rien si l'on ne vérifie pas le stock réel régulièrement.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 3 – LA MÉTHODE PEPS (séance 3)
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="peps" style="margin-top:40px">
+  <span class="icone">🥚</span>
+  <h2><small>Séance 3 · 1 h</small>Bloc 3 – Premier entré, premier sorti (PEPS)</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo</div>
+  <code>Fiche de stock = suit chaque produit en quantité (stock en volume) et en euros (stock en valeur).</code>
+  <code>Montant = quantité × coût unitaire.</code>
+  <code>PEPS (premier entré, premier sorti) = on sort d'abord les produits les plus anciens, au coût des plus anciens.</code>
+  <code>Après une entrée : le nouveau lot s'ajoute sous l'ancien. Après une sortie : on retire d'abord l'ancien lot, puis le nouveau.</code>
+  <p class="note">Source : section 3 du manuel (les différentes méthodes de gestion de stocks) et exercice 8. Le manuel cite aussi la méthode du CMUP : elle n'est pas au programme du CAP boulanger, seule la méthode PEPS est demandée.</p>
+</div>
+
+<!-- EX 9 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 9</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Pourquoi une fiche de stock ?</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      M. Bertin tient une <strong>fiche de stock</strong> pour chaque produit d'Au Pain Doré. Il explique à Léa : « je dois savoir combien j'ai d'œufs, mais aussi combien d'argent ils représentent ».
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Pourquoi le boulanger doit-il connaître son stock en quantité ?</p></div>
+      <div class="question"><span class="q-num">2</span><p>Pourquoi doit-il connaître son stock en valeur (en euros) ?</p></div>
+      <div class="question"><span class="q-num">3</span><p>Que signifie PEPS ? Quels œufs sortent en premier ?</p></div>
+      <div class="question"><span class="q-num">4</span><p>Pourquoi utiliser cette méthode pour des denrées périssables comme les œufs ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> relis le texte de la section 3 du manuel (page avec l'œuf et le bol de sucre).</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span> <span class="res">Pour éviter une rupture de stock.</span>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span> <span class="res">Pour gérer au mieux sa trésorerie (l'argent dont dispose l'entreprise).</span>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">Premier entré, premier sorti : les œufs les plus anciens sortent en premier.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">Pour que les produits les plus anciens soient utilisés avant de se détériorer.</p>
+        <p class="conclu">Dans la chambre froide, on range donc les nouveaux œufs derrière les anciens.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 10 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 10</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Que s'est-il passé le 5 avril ?</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Les œufs sont achetés par <strong>canadienne</strong> (carton de 360 œufs). Le 1er avril, Au Pain Doré a <strong>2 canadiennes à 43,20 €</strong>.<br><br>
+      Le 5 avril :<br>
+      • Léa reçoit une livraison (<strong>bon d'entrée n° 678</strong>) de <strong>3 canadiennes à 46,80 €</strong> chacune ;<br>
+      • le même jour, Yanis sort <strong>3 canadiennes</strong> pour la production (<strong>bon de sortie n° 7</strong>).
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calcule le montant de l'entrée du 5 avril.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Après cette entrée, détaille le stock réel (les deux lots).</p></div>
+      <div class="question"><span class="q-num">3</span><p>Avec la méthode PEPS, détaille la sortie de 3 canadiennes et calcule son montant.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Donne le stock réel après la sortie, en quantité et en euros.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> ce sont les 4 bulles de l'exercice 8 du manuel. On sort d'abord les 2 canadiennes les plus anciennes.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>3 × 46,80 € = 140,40 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>2 canadiennes × 43,20 € = 86,40 € (stock le plus ancien)</code>
+        <code>3 canadiennes × 46,80 € = 140,40 € (nouveau stock)</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>2 × 43,20 € = 86,40 € (d'abord le stock le plus ancien)</code>
+        <code>1 × 46,80 € = 46,80 € (puis le nouveau stock)</code>
+        <code>Montant de la sortie : 86,40 + 46,80 = 133,20 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">3 − 1 = 2 canadiennes à 46,80 €, soit 93,60 €.</p>
+        <p class="conclu">Corrigé du manuel, exercice 8 (ligne du 05/04/2024).</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 11 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 11</span>
+    <span class="badge badge-2">◆ intermédiaire</span>
+    <span class="exo-titre-txt">La fiche de stock des œufs, le 7 avril</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Après le 5 avril, il reste <strong>2 canadiennes à 46,80 €</strong> (93,60 €). Le 7 avril :
+      <div class="table-wrap">
+      <table class="tableau-donnees">
+        <tr><th>Date</th><th>Document</th><th>Entrée</th><th>Sortie</th></tr>
+        <tr><td>07/04</td><td>Bon d'entrée n° 687</td><td class="num">4 à 39,60 €</td><td></td></tr>
+        <tr><td>07/04</td><td>Bon de sortie n° 8</td><td></td><td class="num">4</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calcule le montant du bon d'entrée n° 687.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Détaille le stock réel après cette entrée.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Détaille la sortie n° 8 avec la méthode PEPS et calcule chaque montant.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Donne le stock réel après la sortie n° 8.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> exercice 8 du manuel. Les 2 canadiennes à 46,80 € sont les plus anciennes : elles sortent en premier.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>4 × 39,60 € = 158,40 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>2 × 46,80 € = 93,60 €</code>
+        <code>4 × 39,60 € = 158,40 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>2 × 46,80 € = 93,60 €</code>
+        <code>2 × 39,60 € = 79,20 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">2 canadiennes à 39,60 €, soit 79,20 €.</p>
+        <p class="conclu">Corrigé du manuel, exercice 8 (lignes du 07/04/2024).</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 12 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 12</span>
+    <span class="badge badge-exam">★ examen</span>
+    <span class="exo-titre-txt">L'état du stock d'œufs le 10 avril</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Après le 7 avril, il reste <strong>2 canadiennes à 39,60 €</strong>. Le 10 avril, Léa enregistre le <strong>bon d'entrée n° 857</strong> : <strong>5 canadiennes à 46,80 €</strong>. M. Bertin lui demande de faire le point.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calcule le montant de l'entrée du 10 avril.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Donne l'état du stock réel d'œufs le 10 avril en volume.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Donne l'état du stock réel d'œufs le 10 avril en valeur.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Combien d'œufs cela représente-t-il ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> exercice 9 du manuel. Une canadienne = 360 œufs. Ajoute les deux lots.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>5 × 46,80 € = 234,00 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>2 + 5 = 7 canadiennes</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>79,20 € + 234,00 € = 313,20 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <code>7 × 360 = 2 520 œufs</code>
+        <p class="conclu">Corrigé du manuel, exercice 9. Attention : on ne calcule pas 7 × 46,80 €, car les deux lots n'ont pas le même coût unitaire.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 4 – LA FICHE DE STOCK DE LA FARINE (séance 4)
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="fiche" style="margin-top:40px">
+  <span class="icone">🌾</span>
+  <h2><small>Séance 4 · 1 h</small>Bloc 4 – Compléter une fiche de stock</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 méthode</div>
+  <code>1. Bon d'entrée : je calcule le montant (quantité × coût unitaire), puis j'ajoute le lot sous le stock existant.</code>
+  <code>2. Bon de sortie : je prends d'abord le lot le plus ancien, puis le suivant si besoin. Je calcule chaque montant.</code>
+  <code>3. Stock réel : je recopie les lots qui restent, avec leur quantité, leur coût unitaire et leur montant.</code>
+  <p class="note">Source : exercice 10 du manuel (fiche de stock de la farine T45, unité : sac de 25 kg). Dans la boulangerie, la farine T45 sert surtout aux viennoiseries et à la brioche.</p>
+</div>
+
+<!-- EX 13 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 13</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Farine T45 : le mois de janvier</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Yanis tient la fiche de stock de la <strong>farine T45</strong> (sacs de 25 kg) d'Au Pain Doré.
+      <div class="table-wrap">
+      <table class="tableau-donnees">
+        <tr><th>Date</th><th>Document</th><th>Entrée</th><th>Sortie</th></tr>
+        <tr><td>01/01</td><td>En stock</td><td colspan="2" class="num">2 sacs à 22,00 €</td></tr>
+        <tr><td>02/01</td><td>Bon d'entrée n° 678</td><td class="num">7 à 21,90 €</td><td></td></tr>
+        <tr><td>22/01</td><td>Bon de sortie n° 7</td><td></td><td class="num">6</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calcule la valeur du stock au 01/01.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Calcule le montant de l'entrée du 02/01 et détaille le stock réel.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Détaille la sortie du 22/01 avec la méthode PEPS.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Donne le stock réel après le 22/01.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> 6 sacs à sortir = les 2 sacs anciens + 4 sacs du nouveau lot.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>2 × 22,00 € = 44,00 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>Entrée : 7 × 21,90 € = 153,30 €</code>
+        <code>Stock : 2 × 22,00 € = 44,00 € et 7 × 21,90 € = 153,30 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>2 × 22,00 € = 44,00 €</code>
+        <code>4 × 21,90 € = 87,60 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">9 − 6 = 3 sacs à 21,90 €, soit 65,70 €.</p>
+        <p class="conclu">Corrigé du manuel, exercice 10.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 14 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 14</span>
+    <span class="badge badge-2">◆ intermédiaire</span>
+    <span class="exo-titre-txt">Farine T45 : début février</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Après le 22/01, il reste <strong>3 sacs à 21,90 €</strong> (65,70 €).
+      <div class="table-wrap">
+      <table class="tableau-donnees">
+        <tr><th>Date</th><th>Document</th><th>Entrée</th><th>Sortie</th></tr>
+        <tr><td>02/02</td><td>Bon d'entrée n° 687</td><td class="num">5 à 22,30 €</td><td></td></tr>
+        <tr><td>07/02</td><td>Bon de sortie n° 8</td><td></td><td class="num">5</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Calcule le montant de l'entrée du 02/02 et détaille le stock réel.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Détaille la sortie du 07/02 avec la méthode PEPS.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Donne le stock réel après le 07/02.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> 5 sacs à sortir = 3 sacs à 21,90 € + 2 sacs à 22,30 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Entrée : 5 × 22,30 € = 111,50 €</code>
+        <code>Stock : 3 × 21,90 € = 65,70 € et 5 × 22,30 € = 111,50 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>3 × 21,90 € = 65,70 €</code>
+        <code>2 × 22,30 € = 44,60 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">8 − 5 = 3 sacs à 22,30 €, soit 66,90 €.</p>
+        <p class="conclu">Corrigé du manuel, exercice 10.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 15 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 15</span>
+    <span class="badge badge-exam">★ examen</span>
+    <span class="exo-titre-txt">Farine T45 : fin février et bilan</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Après le 07/02, il reste <strong>3 sacs à 22,30 €</strong> (66,90 €).
+      <div class="table-wrap">
+      <table class="tableau-donnees">
+        <tr><th>Date</th><th>Document</th><th>Entrée</th><th>Sortie</th></tr>
+        <tr><td>15/02</td><td>Bon d'entrée n° 857</td><td class="num">6 à 22,10 €</td><td></td></tr>
+        <tr><td>27/02</td><td>Bon de sortie n° 9</td><td></td><td class="num">6</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Complète la ligne du 15/02 (montant de l'entrée, stock réel).</p></div>
+      <div class="question"><span class="q-num">2</span><p>Complète la ligne du 27/02 (sortie en PEPS, stock réel).</p></div>
+      <div class="question"><span class="q-num">3</span><p>Donne l'état du stock de farine T45 le 27/02, en volume (sacs et kg) et en valeur.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> applique les 3 étapes du mémo, ligne par ligne.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Entrée : 6 × 22,10 € = 132,60 €</code>
+        <code>Stock : 3 × 22,30 € = 66,90 € et 6 × 22,10 € = 132,60 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>Sortie : 3 × 22,30 € = 66,90 € et 3 × 22,10 € = 66,30 €</code>
+        <code>Stock : 3 × 22,10 € = 66,30 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">3 sacs, soit 3 × 25 = 75 kg, pour une valeur de 66,30 €.</p>
+        <p class="conclu">Corrigé du manuel, exercice 10. Remarque : dans le manuel, la fiche de la farine porte la même référence (82022) et les mêmes numéros de bons (678, 687, 857, 7, 8) que la fiche des œufs. C'est une erreur : chaque produit a sa propre référence et les bons sont numérotés dans l'ordre chronologique. C'est pourquoi la référence n'est pas reprise ici.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 5 – SUJETS TYPE EXAMEN (séance 5)
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="examen" style="margin-top:40px">
+  <span class="icone">🏁</span>
+  <h2><small>Séance 5 · 1 h</small>Bloc 5 – Sujets type examen EP1</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 méthode pour l'examen</div>
+  <code>1. Lire la situation et souligner les quantités, les coûts unitaires et les dates</code>
+  <code>2. Écrire le calcul avant le résultat : 3 × 22,10 € = 66,30 €</code>
+  <code>3. Répondre aux questions de cours par une phrase complète</code>
+  <p class="note">À l'épreuve EP1, la partie gestion appliquée dure environ 30 minutes et est notée sur 20 points. Les questions s'appuient sur une situation professionnelle et des documents d'entreprise.</p>
+</div>
+
+<!-- EX 16 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 16</span>
+    <span class="badge badge-exam">★ examen</span>
+    <span class="exo-titre-txt">Sujet complet (30 min, /20) : la farine T45 d'Au Pain Doré</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Tu es apprenti(e) chez <strong>Au Pain Doré</strong>. M. Bertin te confie la gestion du stock de <strong>farine T45</strong> (sacs de 25 kg).<br><br>
+      <strong>Annexe 1 – niveaux de stock fixés :</strong> stock maximum 20 sacs · stock minimum 3 sacs · stock de sécurité 2 sacs.<br><br>
+      <strong>Annexe 2 – fiche de stock (extrait) :</strong>
+      <div class="table-wrap">
+      <table class="tableau-donnees">
+        <tr><th>Date</th><th>Document</th><th>Entrée</th><th>Sortie</th><th>Stock réel</th></tr>
+        <tr><td>01/01</td><td>En stock</td><td></td><td></td><td class="num">2 à 22,00 €</td></tr>
+        <tr><td>02/01</td><td>Bon d'entrée n° 678</td><td class="num">7 à 21,90 €</td><td></td><td class="num">2 à 22,00 € · 7 à 21,90 €</td></tr>
+        <tr><td>22/01</td><td>Bon de sortie n° 7</td><td></td><td class="num">6</td><td class="num">3 à 21,90 €</td></tr>
+        <tr><td>02/02</td><td>Bon d'entrée n° 687</td><td class="num">5 à 22,30 €</td><td></td><td class="num">3 à 21,90 € · 5 à 22,30 €</td></tr>
+        <tr><td>07/02</td><td>Bon de sortie n° 8</td><td></td><td class="num">5</td><td class="num">3 à 22,30 €</td></tr>
+        <tr><td>15/02</td><td>Bon d'entrée n° 857</td><td class="num">6 à 22,10 €</td><td></td><td class="num">?</td></tr>
+        <tr><td>27/02</td><td>Bon de sortie n° 9</td><td></td><td class="num">6</td><td class="num">?</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Nomme le document qui accompagne l'opération du 15/02 et celui de l'opération du 27/02. (2 points)</p></div>
+      <div class="question"><span class="q-num">2</span><p>Calcule le stock d'alerte et justifie le calcul. (3 points)</p></div>
+      <div class="question"><span class="q-num">3</span><p>Complète les lignes du 15/02 et du 27/02 avec la méthode PEPS (montants compris). (6 points)</p></div>
+      <div class="question"><span class="q-num">4</span><p>Donne l'état du stock réel le 27/02, en volume et en valeur. (3 points)</p></div>
+      <div class="question"><span class="q-num">5</span><p>Relève dans la colonne « stock réel » les dates où le stock était au niveau d'alerte ou en dessous. Que fallait-il faire à ces dates ? (3 points)</p></div>
+      <div class="question"><span class="q-num">6</span><p>Explique une conséquence d'une rupture de farine pour Au Pain Doré. (3 points)</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> ce sujet réunit l'exercice 5 (niveaux de stock) et l'exercice 10 (fiche de stock) du manuel. Pour la question 5, compte le nombre total de sacs à chaque ligne.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span> <span class="res">15/02 : bon d'entrée. 27/02 : bon de sortie.</span> (1 + 1 pt)
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>Stock d'alerte = stock minimum + stock de sécurité = 3 + 2 = 5 sacs</code>
+        (formule 1 pt, calcul 1 pt, résultat 1 pt)
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <div class="table-wrap">
+        <table class="tableau-corr">
+          <tr><th>Date</th><th>Entrée</th><th>Sortie</th><th>Stock réel</th></tr>
+          <tr><td>15/02</td><td class="val">6 × 22,10 = 132,60 €</td><td></td><td class="val">3 × 22,30 = 66,90 €<br>6 × 22,10 = 132,60 €</td></tr>
+          <tr><td>27/02</td><td></td><td class="val">3 × 22,30 = 66,90 €<br>3 × 22,10 = 66,30 €</td><td class="val">3 × 22,10 = 66,30 €</td></tr>
+        </table>
+        </div>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">3 sacs (75 kg), pour une valeur de 66,30 €.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">5</span>
+        <code>01/01 : 2 sacs · 22/01 : 3 sacs · 07/02 : 3 sacs · 27/02 : 3 sacs</code>
+        <p class="res">À ces dates, le stock était inférieur au stock d'alerte (5 sacs) : il fallait passer commande au meunier.</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">6</span>
+        <p class="res">Sans farine T45, la boulangerie ne peut plus fabriquer ses viennoiseries : elle ne les vend pas et perd de l'argent. Les clients déçus peuvent aller chez un concurrent.</p>
+        <p class="conclu">Le stock maximum (20 sacs) n'a jamais été dépassé : le plus haut niveau atteint est 9 sacs. Ce sujet combine deux exercices du manuel qui, dans le livre, ne sont pas liés.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 17 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 17</span>
+    <span class="badge badge-exam">★ examen</span>
+    <span class="exo-titre-txt">Les erreurs de Yanis sur la fiche des œufs</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Yanis a rempli seul la fin de la fiche de stock des œufs. M. Bertin trouve <strong>deux erreurs</strong>. Le 7 avril, avant la sortie, le stock était : 2 canadiennes à 46,80 € et 4 canadiennes à 39,60 €.
+      <div class="table-wrap">
+      <table class="tableau-donnees">
+        <tr><th>Date</th><th>Document</th><th>Sortie (écrite par Yanis)</th><th>Stock réel (écrit par Yanis)</th></tr>
+        <tr><td>07/04</td><td>Bon de sortie n° 8</td><td class="num">4 × 39,60 = 158,40 €</td><td class="num">2 × 46,80 = 93,60 €</td></tr>
+        <tr><td>10/04</td><td>Bon d'entrée n° 857 (5 à 46,80 €)</td><td></td><td class="num">7 × 46,80 = 327,60 €</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Quelle erreur Yanis a-t-il faite le 07/04 ? Corrige la ligne.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Quelle erreur a-t-il faite le 10/04 ? Corrige la ligne.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Pourquoi la méthode PEPS est-elle importante pour les œufs ?</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> compare avec ta correction des exercices 11 et 12 (exercice 8 du manuel).</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p>Yanis a sorti les œufs les plus récents, et non les plus anciens. Ce n'est pas la méthode PEPS.</p>
+        <code>Sortie : 2 × 46,80 € = 93,60 € et 2 × 39,60 € = 79,20 €</code>
+        <code>Stock : 2 × 39,60 € = 79,20 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p>Il a calculé tout le stock au dernier prix. Les deux lots n'ont pas le même coût unitaire.</p>
+        <code>Stock : 2 × 39,60 € = 79,20 € et 5 × 46,80 € = 234,00 €, soit 7 canadiennes pour 313,20 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="res">Les œufs sont périssables : il faut utiliser les plus anciens en premier pour éviter qu'ils se détériorent.</p>
+        <p class="conclu">Valeurs justes reprises du corrigé du manuel, exercices 8 et 9.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 18 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 18</span>
+    <span class="badge badge-exam">★ examen</span>
+    <span class="exo-titre-txt">Questions de cours éclair : vrai ou faux ?</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Avant l'examen, M. Bertin teste Léa et Yanis pendant la pause. Réponds par vrai ou faux, puis corrige les phrases fausses.
+    </div>
+    <div class="questions">
+      <div class="question"><span class="q-num">1</span><p>Une livraison de farine entre dans le stock avec un bon de sortie.</p></div>
+      <div class="question"><span class="q-num">2</span><p>Une rupture de stock peut faire perdre des clients.</p></div>
+      <div class="question"><span class="q-num">3</span><p>Le stock d'alerte = stock maximum + stock de sécurité.</p></div>
+      <div class="question"><span class="q-num">4</span><p>Avec la méthode PEPS, les produits les plus récents sortent en premier.</p></div>
+      <div class="question"><span class="q-num">5</span><p>Une fiche de stock donne le stock en volume et en valeur.</p></div>
+      <div class="question"><span class="q-num">6</span><p>Le beurre est une denrée non périssable.</p></div>
+    </div>
+    <div class="ordre-grandeur"><strong>Coup de pouce :</strong> relis les mémos des blocs 1, 2 et 3.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span> <span class="res">Faux.</span> Elle entre avec un bon d'entrée.
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span> <span class="res">Vrai.</span> Le client déçu peut aller chez un concurrent (document 2).
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span> <span class="res">Faux.</span> Stock d'alerte = stock minimum + stock de sécurité.
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span> <span class="res">Faux.</span> Les plus anciens sortent en premier.
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">5</span> <span class="res">Vrai.</span> En quantité et en euros.
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">6</span> <span class="res">Faux.</span> Le beurre est une denrée périssable (DLC courte).
+        <p class="conclu">Ces six points couvrent les savoirs du référentiel : bon d'entrée, bon de sortie, fiche de stock, méthode PEPS.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+</main>
+
+<footer class="site-footer">
+  CAP boulanger – Gestion appliquée &nbsp;|&nbsp; Chapitre 11 : le stockage des produits &nbsp;|&nbsp; 18 exercices progressifs
+</footer>
+
+<script>
+function toggleCorr(btn) {
+  const corr = btn.nextElementSibling;
+  const isVisible = corr.classList.contains('visible');
+  corr.classList.toggle('visible', !isVisible);
+  btn.textContent = isVisible ? '✅ Voir la correction' : '🔒 Masquer la correction';
+}
+</script>
+</body>
+</html>
